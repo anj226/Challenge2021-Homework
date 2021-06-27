@@ -65,7 +65,7 @@ class Controller:
 
     def ctrl_stop(self, key_down_events):
         keys = pg.key.get_pressed()
-        if keys[pg.K_p]:
+        if keys[pg.K_r]:
             self.ev_manager.post(EventStateChange(Const.STATE_PLAY))
 
 

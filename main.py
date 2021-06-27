@@ -15,7 +15,7 @@ def main():
     controller = Controller(ev_manager, model)
     view       = GraphicalView(ev_manager, model)
 
-    # Main loop
+    # Main loop 
     model.run()
 
 
