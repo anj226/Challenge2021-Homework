@@ -28,7 +28,7 @@ class EventManager:
         '''
         # # this segment use to debug
         # if not (isinstance(event, Event_EveryTick) or isinstance(event, Event_EverySec)):
-        #     print( str(event) )
+        print( str(event) )
         for listener in self.listeners:
             listener.notify(event)
 

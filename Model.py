@@ -77,6 +77,9 @@ class GameEngine:
         self.clock = pg.time.Clock()
         self.state_machine.push(Const.STATE_MENU)
         self.players = [Player(0), Player(1)]
+        self.turns = 1
+        self.time_left = 1000
+        self.winner = -1
 
     def notify(self, event: BaseEvent):
         '''
@@ -92,12 +95,19 @@ class GameEngine:
                 self.update_menu()
             elif cur_state == Const.STATE_PLAY:
                 self.update_objects()
-
                 self.timer -= 1
+                self.time_left -= 1
                 if self.timer == 0:
                     self.ev_manager.post(EventTimesUp())
+                if(self.time_left == 0):
+                    self.turns ^= 1
+                    self.time_left = 1000
+                    self.players[0].speed,self.players[1].speed = self.players[1].speed,self.players[0].speed 
+                    print(f"Change turns! Now is player{self.turns}")
             elif cur_state == Const.STATE_ENDGAME:
+                self.winner = self.turns
                 self.update_endgame()
+
 
         elif isinstance(event, EventStateChange):
             if event.state == Const.STATE_POP:
@@ -146,9 +156,12 @@ class GameEngine:
         self.ev_manager.post(EventInitialize())
         self.timer = Const.GAME_LENGTH
         while self.running:
+            if( pg.math.Vector2.magnitude(self.players[0].position-self.players[1].position) < 150 ): 
+                self.ev_manager.post(EventStateChange(Const.STATE_ENDGAME))
             self.ev_manager.post(EventEveryTick())
             self.clock.tick(Const.FPS)
-
+            print(self.timer)
+        print(f"Player{self.turns} wins!")
 
 class Player:
     def __init__(self, player_id):
